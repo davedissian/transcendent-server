@@ -9,15 +9,15 @@ from transcendentserver.extensions import db, UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import func
 from base64 import urlsafe_b64encode
-from M2Crypto.m2 import rand_bytes
+import os
 
-def gen_session(*args, **kwargs):
-    return urlsafe_b64encode(rand_bytes(SESSION.KEY_LENGTH)).rstrip('=')
+def gen_session_id(*args, **kwargs):
+    return urlsafe_b64encode(os.urandom(SESSION.KEY_LENGTH)).rstrip('=')
 
 class Session(db.Model):
     __tablename__ = SESSION.TABLENAME
 
-    id            = db.Column(db.String(SESSION.ID_LENGTH), default=gen_session, primary_key=True)
+    id            = db.Column(db.String(SESSION.ID_LENGTH), default=gen_session_id, primary_key=True)
     user_id       = db.Column(db.Integer, 
                         db.ForeignKey('%s.id' % USER.TABLENAME), nullable=False)
     last_accessed = db.Column(db.DateTime, default=get_current_datetime)
