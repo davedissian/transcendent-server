@@ -1,10 +1,12 @@
 from flask import Flask
-from transcendentserver.extensions import db, login_manager, mail, assets, cache
-from transcendentserver.views import client, account
+from transcendentserver.extensions import (db, login_manager, mail, assets, 
+                                            cache, api)
+from transcendentserver.views import client, account, base
 from wtforms.fields import HiddenField
 from transcendentserver.controls import mailer
 from transcendentserver.models import User
 from transcendentserver.constants import MAIL
+from transcendentserver.lib.npid import NPID
 
 def create_app():
     app = Flask('transcendentserver')
@@ -22,9 +24,11 @@ def configure_filters(app):
     def bootstrap_is_hidden_field_filter(field):
         return isinstance(field, HiddenField)
     app.jinja_env.globals['bootstrap_is_hidden_field'] = bootstrap_is_hidden_field_filter
+
 def configure_blueprints(app):
-    app.register_blueprint(client, url_prefix='/client')
+    app.register_blueprint(client,  url_prefix='/client')
     app.register_blueprint(account, url_prefix='/account')
+    app.register_blueprint(base,    url_prefix='/')
 
 class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/transcendentserver.db'
@@ -38,6 +42,7 @@ class DefaultConfig:
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     DEFAULT_MAIL_SENDER = MAIL.ROBOT
+    STEAM_API_KEY = ''
 
 def configure_extensions(app):
     db.init_app(app)
@@ -45,8 +50,11 @@ def configure_extensions(app):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
+    api.init_app(app)
 
     @login_manager.user_loader
     def load_user(userid):
+        if not isinstance(userid, NPID):
+            userid = NPID(hex=userid)
         return User.get(userid)
 

@@ -29,6 +29,11 @@ class RegistrationForm(Form):
                     USER.MIN_PASSWORD_LENGTH)
 
 class LoginForm(Form):
-    name = TextField('name', validators=[DataRequired])
-    password = PasswordField('password', validators=[DataRequired])
+    name = TextField('name', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
     submit = SubmitField('Register')
+
+    def validate_name(form, field):
+        if not User.find(field.data):
+            raise ValidationError('User not found')
+    

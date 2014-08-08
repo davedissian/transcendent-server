@@ -9,6 +9,7 @@ from transcendentserver.extensions import db, UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import func
 from base64 import urlsafe_b64encode
+from transcendentserver.extensions import NPIDType
 import os
 
 def gen_session_id(*args, **kwargs):
@@ -18,7 +19,7 @@ class Session(db.Model):
     __tablename__ = SESSION.TABLENAME
 
     id            = db.Column(db.String(SESSION.ID_LENGTH), default=gen_session_id, primary_key=True)
-    user_id       = db.Column(db.Integer, 
+    user_id       = db.Column(NPIDType,
                         db.ForeignKey('%s.id' % USER.TABLENAME), nullable=False)
     last_accessed = db.Column(db.DateTime, default=get_current_datetime)
     
@@ -76,7 +77,7 @@ class Session(db.Model):
     @classmethod
     def delete_user_sessions(cls, user_id):
         '''Deletes all user sessions.'''
-        sessions = cls.query.filter_by(user_id=user_id).delete()
+        cls.query.filter_by(user_id=user_id).delete()
         db.session.commit()
         
     def __repr__(self):

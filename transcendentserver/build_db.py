@@ -1,4 +1,4 @@
-from . import create_app
+from transcendentserver import create_app
 from transcendentserver.extensions import db
 from transcendentserver.models import *
 app = create_app()

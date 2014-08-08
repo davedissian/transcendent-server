@@ -1,9 +1,13 @@
-import bcrypt
-from datetime import datetime
 from transcendentserver.constants import USER
+
+from datetime import datetime
+from struct import pack
 from flask import current_app, url_for
 from itsdangerous import URLSafeTimedSerializer, BadSignature
+
+import os
 import pickle
+import bcrypt
 
 def hash_password(plain_password, salt=None):
     if isinstance(plain_password, unicode):
@@ -21,7 +25,7 @@ def get_current_datetime(*args, **kwargs):
 
 def get_validation_link(user_id):
     s = get_serializer()
-    payload = s.dumps(user_id)
+    payload = str(user_id)
     return url_for('account.validate_email',
             payload=payload, _external=True)
 
@@ -30,3 +34,4 @@ def get_serializer(secret_key=None):
     if secret_key is None:
         secret_key = current_app.secret_key
     return URLSafeTimedSerializer(secret_key)
+

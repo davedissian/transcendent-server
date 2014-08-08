@@ -1,3 +1,3 @@
 from transcendentserver.models.user import User
-from transcendentserver.models.game import Game
+from transcendentserver.models.lobby import Lobby
 from transcendentserver.models.session import Session
