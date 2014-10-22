@@ -6,12 +6,9 @@ from transcendentserver.controls import matchmaking
 from transcendentserver.constants import HTTP, LOBBY
 from transcendentserver.lib.npid import NPID
 
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from functools import wraps
-
-# TODO: Write migration code if David wants to go that way.
-
 
 client = Blueprint('client', 'transcendentserver')
 
@@ -26,6 +23,15 @@ def json_status(f):
         except Exception, e:
             # TODO: Replace with proper debug logging
             return json.dumps({'success' : False, 'message' : e.message})
+    return wrapper
+
+def post_only(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if request.method != 'POST':
+            abort(405)
+        else:
+            return f(*args, **kwargs)
     return wrapper
 
 def get_session_or_abort():
@@ -51,22 +57,33 @@ def get_session_or_abort():
 
     return session
 
-class Login(Resource):
-    def post(self):
-        name, password = (request.form.get('username'), 
-                                         request.form.get('password'))
+
+
+class LoginAPI(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('username', type=str, required=True)
+        self.reqparse.add_argument('password', type=str, required=True)
+
+    def post(self, username, password):
+        args = self.reqparse.parse_args()
+        name, password = args['name'], args['password']
+
         current_user = User.find(name)
 
         if current_user and \
                 current_user.check_password(password):
             Session.delete_user_sessions(current_user.id)
             new_session = Session.create_session(current_user)
-            return {'access_code' : new_session.id}, 200
+            return {'success' : True, 'access_code' : new_session.id}, HTTP.SUCCESS
         return {'success' : False, 'access_code' : None}, HTTP.UNAUTHORIZED
 
-api.add_resource(Login, '/v1/login')
+
+api.add_resource(Login, '/v1/login', endpoint='login')
+
 
 @client.route('/login', methods=('GET', 'POST'))
+@post_only
 def auth_login():
     name, password = request.form.get('username'), request.form.get('password')
     current_user = User.find(name)
@@ -89,6 +106,7 @@ def auth_login():
             })
 
 @client.route('/logout/')
+@post_only
 def logout(session_id):
     session = get_session_or_abort()
     
@@ -115,8 +133,10 @@ def find_game():
         , 'success' : True
         })
 
-@client.route('/server/host')
+@client.route('/server/host', methods=('GET', 'POST'))
+@post_only
 def host_game():
+    if request.method != 'POST': return 405
     session = get_session_or_abort()
     host_guid, game_mode = (request.args.get('guid'), 
                             request.args.get('game_mode'))
@@ -128,11 +148,12 @@ def host_game():
     new_lobby = Lobby.create_lobby(host_guid, game_mode, session.user_id, max_players)
     return json.dumps({'success' : True, 'id' : new_lobby.id.hex()})
 
-@client.route('/server/renew')
+@client.route('/server/renew', methods=('GET', 'POST'))
 @json_status
+@post_only
 def renew_game():
     session = get_session_or_abort()
-    lobby_id = request.args.get('id')
+    lobby_id = request.form.get('id')
 
     if not lobby_id:
         return abort(400)
@@ -150,7 +171,9 @@ def renew_game():
 
 @client.route('/server/remove', methods=('GET', 'POST'))
 @json_status
+@post_only
 def delete_game():
+    if request.method != 'POST': abort(405)
     session = get_session_or_abort()
     lobby_id = request.values.get('id')
 
@@ -165,13 +188,13 @@ def delete_game():
         return json.dumps({'success' : True})
     return json.dumps({'success' : False})
 
-@client.route('/server/migrate')
+@client.route('/server/migrate', methods=('GET', 'POST'))
 @json_status
 def migrate():
     print
     print 'MIGRATION'
     print
-    print request.args.get('auth')
+    print request.form.get('auth')
     # I am dubious about this specification. There is a case where if someone
     # hacked the cert of the client, one could migrate all servers as a kind
     # of DoS attack.

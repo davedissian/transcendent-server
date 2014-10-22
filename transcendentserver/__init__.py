@@ -42,6 +42,7 @@ class DefaultConfig:
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     DEFAULT_MAIL_SENDER = MAIL.ROBOT
+    CACHE_TYPE = 'simple'
     STEAM_API_KEY = ''
 
 def configure_extensions(app):

@@ -10,6 +10,13 @@ class SESSION:
     KEY_LENGTH = 16
     ID_LENGTH  = 22
 
+class PURCHASE:
+    TABLENAME = 'purchases'
+
+    class ITEM:
+        EARLY_ALPHA = 'EARLY_ALPHA'
+
+
 class USER:
     TABLENAME           = 'users'
     MAX_NAME_LENGTH     = 30
@@ -33,6 +40,7 @@ class HTTP:
 
     UNAUTHORIZED = 401
     NOTFOUND     = 404
+    BADMETHOD    = 405
 
 class MAIL:
     ROBOT   = 'donotreply@transcendent.local'

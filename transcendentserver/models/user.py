@@ -1,9 +1,10 @@
 from transcendentserver.extensions import db, NPIDType
 from transcendentserver.lib.npid import NPID
-from transcendentserver.constants import USER
+from transcendentserver.constants import USER, PURCHASE
 from transcendentserver.controls.steam import get_steam_userinfo
 from transcendentserver.utils import hash_password, get_current_datetime
 from flask_login import UserMixin
+from transcendentserver.models import Purchase
 
 from werkzeug.security import safe_str_cmp
 
@@ -20,8 +21,9 @@ class User(db.Model, UserMixin):
     created_at      = db.Column(db.DateTime, default=get_current_datetime)
 
     current_session = db.relationship('Session', 
-                        backref=db.backref('user',lazy='joined'), 
-                        lazy='joined')
+                                      backref=db.backref('user',
+                                                         lazy='joined'), 
+                                      lazy='joined')
 
     def get_password(self):
         return self._password
@@ -58,7 +60,11 @@ class User(db.Model, UserMixin):
     def refresh_steam_name(self):
         if self.steam_id:
             steam_data = get_steam_userinfo(self.steam_id)
-            new_user.name = steam_data['personaname']
+            self.name = steam_data['personaname']
+
+    def can_play(self):
+        purchases = Purchase.purchases_by(self).all()
+        return PURCHASE.ITEM.EARLY_ALPHA in purchases
 
     @classmethod
     def register_new_user(cls, name, email, password):

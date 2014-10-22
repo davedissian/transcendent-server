@@ -20,6 +20,10 @@ from sqlalchemy import types
 
 from transcendentserver.lib.npid import NPID
 
+# Index optimisations can be made:
+# Only index the timestamp 32 bits of the ID (First 8 chars in hex)
+# Only index to the precision required by the sign up speed.
+# i.e. If you get an amortised 1 signup a minute, only index the first 26 bits
 class NPIDType(types.TypeDecorator):
     impl = types.CHAR
     
@@ -42,14 +46,9 @@ class NPIDType(types.TypeDecorator):
         else:
             return None
 
-    #def coerce_compared_value(self, op, value):
-    #    print 'Coerce compared value', value
-    #    if isinstance(value, NPID):
-    #        return value.hex()
-    #    return value
-
     def is_mutable(self):
         return False
+
 
 class UUIDType(types.TypeDecorator):
     impl = types.BINARY

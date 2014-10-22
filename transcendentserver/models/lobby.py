@@ -18,7 +18,8 @@ class Lobby(db.Model):
 
     @classmethod
     def create_lobby(cls, host_guid, game_mode, host_user_id, max_players=None):
-        new_lobby = Lobby(host_guid=host_guid, mode=game_mode, host_user_id=host_user_id, max_players=max_players)
+        new_lobby = Lobby(host_guid=host_guid, mode=game_mode,
+                          host_user_id=host_user_id, max_players=max_players)
         db.session.add(new_lobby)
         db.session.commit()
         return new_lobby
