@@ -79,7 +79,7 @@ class LoginAPI(Resource):
         return {'success' : False, 'access_code' : None}, HTTP.UNAUTHORIZED
 
 
-api.add_resource(Login, '/v1/login', endpoint='login')
+api.add_resource(LoginAPI, '/v1/login', endpoint='login')
 
 
 @client.route('/login', methods=('GET', 'POST'))

@@ -10,7 +10,7 @@ class Purchase(db.Model):
     user_id       = db.Column(NPIDType,
                               db.ForeignKey('%s.id' % USER.TABLENAME),
                               index=True, nullable=False)
-    created_at    = db.Column(db.Datetime, default=get_current_datetime)
+    created_at    = db.Column(db.DateTime, default=get_current_datetime)
     product_id    = db.Column(NPIDType,
                               db.ForeignKey('%s.id' % PRODUCT.TABLENAME),
                               index=True, nullable=False)
@@ -19,7 +19,7 @@ class Purchase(db.Model):
     # Should be completely immutable, not linked to the product_id.
     # This allows us to keep track of the price a person actually paid, even
     # across product name changes and price changes.
-    purchase_price = db.Column(db.Decimal)
+    purchase_price = db.Column(db.DECIMAL)
     product_name  = db.Column(db.String)
     
 

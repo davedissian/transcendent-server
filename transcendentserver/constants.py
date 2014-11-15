@@ -16,6 +16,8 @@ class PURCHASE:
     class ITEM:
         EARLY_ALPHA = 'EARLY_ALPHA'
 
+class PRODUCT:
+    TABLENAME           = 'product_table'
 
 class USER:
     TABLENAME           = 'users'
