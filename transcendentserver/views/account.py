@@ -76,10 +76,6 @@ def send_email_validation(new_user):
     priority = MAIL.PRIORITY.VALIDATION
     mailer.send_async(targets, subject, body, sender, priority)
 
-def generate_validation_url():
-    u_id = str(current_user.id)
-    return json.dumps(get_validation_url(u_id))
-
 @account.route('/validate/<payload>')
 def validate_email(payload):
     '''Email address validation'''

@@ -65,9 +65,9 @@ class LoginAPI(Resource):
         self.reqparse.add_argument('username', type=str, required=True)
         self.reqparse.add_argument('password', type=str, required=True)
 
-    def post(self, username, password):
+    def post(self):
         args = self.reqparse.parse_args()
-        name, password = args['name'], args['password']
+        name, password = args['username'], args['password']
 
         current_user = User.find(name)
 
@@ -75,7 +75,8 @@ class LoginAPI(Resource):
                 current_user.check_password(password):
             Session.delete_user_sessions(current_user.id)
             new_session = Session.create_session(current_user)
-            return {'success' : True, 'access_code' : new_session.id}, HTTP.SUCCESS
+            return {'success' : True, 'access_code' : new_session.id}, HTTP.OK
+
         return {'success' : False, 'access_code' : None}, HTTP.UNAUTHORIZED
 
 

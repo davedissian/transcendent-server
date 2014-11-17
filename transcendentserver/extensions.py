@@ -35,6 +35,9 @@ class NPIDType(types.TypeDecorator):
         if value and isinstance(value, NPID):
             return value.hex()
         elif value and not isinstance(value, NPID):
+            if isinstance(value, str) or isinstance(value, unicode):
+                if len(value) == 32:
+                    return value
             return ValueError, 'Value {0} is not a valid NPID'.format(
                                                                   repr(value))
         else:

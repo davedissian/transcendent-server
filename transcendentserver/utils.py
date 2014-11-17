@@ -25,7 +25,7 @@ def get_current_datetime(*args, **kwargs):
 
 def get_validation_link(user_id):
     s = get_serializer()
-    payload = str(user_id)
+    payload = s.dumps(str(user_id))
     return url_for('account.validate_email',
             payload=payload, _external=True)
 
