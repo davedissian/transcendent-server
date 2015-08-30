@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
                                       lazy='joined')
 
     def get_password(self):
-        return self._password
+        return self._password.encode('utf-8')
 
     def set_password(self, plain_password):
         self._password = hash_password(plain_password)

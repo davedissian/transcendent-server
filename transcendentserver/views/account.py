@@ -28,7 +28,7 @@ def register():
         except IntegrityError:
             return 'In use'
         else:
-            send_email_validation(new_user)
+            #send_email_validation(new_user)
             login_user(new_user)
     return render_template('views/account/register.html', form=reg_form)
 
