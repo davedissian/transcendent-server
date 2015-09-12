@@ -1,12 +1,14 @@
 from flask import Flask
-from transcendentserver.extensions import (db, login_manager, mail, assets, 
-                                            cache, api)
+from transcendentserver.extensions import (db, login_manager, mail, assets, cache, api)
 from transcendentserver.views import client, account, base
 from wtforms.fields import HiddenField
 from transcendentserver.controls import mailer
 from transcendentserver.models import User
 from transcendentserver.constants import MAIL
 from transcendentserver.lib.npid import NPID
+
+import os
+import sys
 
 def create_app():
     app = Flask('transcendentserver')
@@ -31,7 +33,7 @@ def configure_blueprints(app):
     app.register_blueprint(base,    url_prefix='/')
 
 class DefaultConfig:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/transcendentserver.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.dirname(os.path.realpath(sys.argv[0])) + '/transcendentserver.db'
     DEBUG = True
     SECRET_KEY = '\xe3\xfd\xdb\xb6A\xda"\xeb@NA\xf7\xa2\x0ccs\x13\x8b\x85\xec\xcb\x11\xe7$M\x11\x7f\x986a\xab]'
     SQLALCHEMY_RECORD_QUERIES = True

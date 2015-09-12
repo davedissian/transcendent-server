@@ -15,7 +15,7 @@ account = Blueprint('account', 'transcendentserver')
 
 @account.route('/register', methods=('GET', 'POST'))
 def register():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for('account.profile'))
     reg_form = RegistrationForm(next=request.args.get('next'))
     

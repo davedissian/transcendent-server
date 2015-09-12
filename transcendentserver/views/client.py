@@ -29,15 +29,6 @@ def json_status(f):
             return json.dumps({'success' : False, 'message' : str(e)})
     return wrapper
 
-def post_only(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if request.method != 'POST':
-            abort(405)
-        else:
-            return f(*args, **kwargs)
-    return wrapper
-
 def get_session_or_abort():
     """
     Checks the request for the 'auth' parameter and, if it contains one,
@@ -55,8 +46,6 @@ def get_session_or_abort():
 
     return session
 
-"""
-TODO: Keep this or deprecate this?
 
 class LoginAPI(Resource):
     def __init__(self):
@@ -79,10 +68,8 @@ class LoginAPI(Resource):
 
 
 api.add_resource(LoginAPI, '/v1/login', endpoint='login')
-"""
 
-@client.route('/login', methods=('GET', 'POST'))
-@post_only
+@client.route('/login', methods=('POST'))
 def login():
     name, password = request.form.get('username'), request.form.get('password')
     current_user = User.find(name)
@@ -101,8 +88,7 @@ def login():
 
     return json.dumps({'success' : False,'access_code' : None})
 
-@client.route('/logout/')
-@post_only
+@client.route('/logout/', methods=('POST'))
 def logout(session_id):
     session = get_session_or_abort()
     
@@ -129,12 +115,10 @@ def server_find():
           'success' : True
         })
 
-@client.route('/server/host', methods=('GET', 'POST'))
-@post_only
+@client.route('/server/host', methods=('POST'))
 def host_game():
     session = get_session_or_abort()
-    host_guid, game_mode = (request.form.get('guid'), 
-                            request.form.get('game_mode'))
+    host_guid, game_mode = (request.form.get('guid'), request.form.get('game_mode'))
     max_players = request.form.get('max_players', LOBBY.MAX_PLAYERS_DEFAULT)
 
     if not (host_guid and game_mode):
@@ -143,9 +127,8 @@ def host_game():
     new_lobby = Lobby.create_lobby(host_guid, game_mode, session.user_id, max_players)
     return json.dumps({'success' : True, 'id' : new_lobby.id.hex()})
 
-@client.route('/server/renew', methods=('GET', 'POST'))
+@client.route('/server/renew', methods=('POST'))
 @json_status
-@post_only
 def renew_game():
     session = get_session_or_abort()
     lobby_id = request.form.get('id')
@@ -164,9 +147,8 @@ def renew_game():
 
     return json.dumps({'success' : False})
 
-@client.route('/server/remove', methods=('GET', 'POST'))
+@client.route('/server/remove', methods=('POST'))
 @json_status
-@post_only
 def delete_game():
     if request.method != 'POST': abort(405)
     session = get_session_or_abort()
