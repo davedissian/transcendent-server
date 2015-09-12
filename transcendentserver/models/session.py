@@ -19,8 +19,7 @@ class Session(db.Model):
     __tablename__ = SESSION.TABLENAME
 
     id            = db.Column(db.String(SESSION.ID_LENGTH), default=gen_session_id, primary_key=True)
-    user_id       = db.Column(NPIDType,
-                        db.ForeignKey('%s.id' % USER.TABLENAME), nullable=False)
+    user_id       = db.Column(NPIDType, db.ForeignKey('%s.id' % USER.TABLENAME), nullable=False)
     last_accessed = db.Column(db.DateTime, default=get_current_datetime)
     
     def authenticate_user_id(self, user_id):

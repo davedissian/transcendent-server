@@ -32,6 +32,7 @@ def register():
             login_user(new_user)
     return render_template('views/account/register.html', form=reg_form)
 
+
 @account.route('/login', methods=('GET', 'POST'))
 def login():
     login_form = LoginForm(next=request.args.get('next'))
@@ -44,6 +45,7 @@ def login():
             login_user(user)
             return redirect(url_for('account.profile'))
     return render_template('views/account/login.html', form=login_form)
+
 
 @account.route('/logout', methods=('GET', 'POST'))
 @login_required
@@ -60,6 +62,7 @@ def profile():
         s += ' Please verify your email address.'
     return s
 
+
 @account.route('/sendvalidation')
 @login_required
 def send_validation():
@@ -68,6 +71,7 @@ def send_validation():
     send_email_validation(current_user)
     return 'Success'
 
+
 def send_email_validation(new_user):
     sender = MAIL.ROBOT
     targets = [new_user.email]
@@ -75,6 +79,7 @@ def send_email_validation(new_user):
     body = render_template('views/account/validation/email.html', validation_url=get_validation_link(new_user.id), user=new_user)
     priority = MAIL.PRIORITY.VALIDATION
     mailer.send_async(targets, subject, body, sender, priority)
+
 
 @account.route('/validate/<payload>')
 def validate_email(payload):

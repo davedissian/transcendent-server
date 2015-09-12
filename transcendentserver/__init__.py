@@ -1,6 +1,6 @@
 from flask import Flask
-from transcendentserver.extensions import (db, login_manager, mail, assets, cache, api)
-from transcendentserver.views import client, account, base
+from transcendentserver.extensions import db, login_manager, mail, assets, cache
+from transcendentserver.views import account, base, client
 from wtforms.fields import HiddenField
 from transcendentserver.controls import mailer
 from transcendentserver.models import User
@@ -11,7 +11,7 @@ import os
 import sys
 
 def create_app():
-    app = Flask('transcendentserver')
+    app = Flask(__name__)
     app.config.from_object(DefaultConfig)
     configure_filters(app)
     configure_extensions(app)
@@ -28,9 +28,9 @@ def configure_filters(app):
     app.jinja_env.globals['bootstrap_is_hidden_field'] = bootstrap_is_hidden_field_filter
 
 def configure_blueprints(app):
-    app.register_blueprint(client,  url_prefix='/client')
+    app.register_blueprint(base, url_prefix='/')
+    app.register_blueprint(client, url_prefix='/client')
     app.register_blueprint(account, url_prefix='/account')
-    app.register_blueprint(base,    url_prefix='/')
 
 class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.dirname(os.path.realpath(sys.argv[0])) + '/transcendentserver.db'
@@ -53,7 +53,6 @@ def configure_extensions(app):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
-    api.init_app(app)
 
     @login_manager.user_loader
     def load_user(userid):

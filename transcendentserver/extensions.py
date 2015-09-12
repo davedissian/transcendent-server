@@ -13,9 +13,6 @@ assets = Environment()
 from flask_cache import Cache
 cache = Cache()
 
-from flask_restful import Api
-api = Api()
-
 from sqlalchemy import types
 
 from transcendentserver.lib.npid import NPID
@@ -38,8 +35,7 @@ class NPIDType(types.TypeDecorator):
             if isinstance(value, str) or isinstance(value, unicode):
                 if len(value) == 32:
                     return value
-            return ValueError, 'Value {0} is not a valid NPID'.format(
-                                                                  repr(value))
+            return ValueError, 'Value {0} is not a valid NPID'.format(repr(value))
         else:
             return None
     

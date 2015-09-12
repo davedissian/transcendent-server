@@ -1,4 +1,5 @@
 from datetime import timedelta
+
 FIFTEEN_MINS = timedelta(0, 15 * 60, 0)
 HALF_DAY = timedelta(0.5)
 DAY = timedelta(1)
