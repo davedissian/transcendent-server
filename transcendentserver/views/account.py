@@ -30,7 +30,7 @@ def register():
         else:
             send_email_validation(new_user)
             login_user(new_user)
-    return render_template('views/account/register.html', form=reg_form)
+    return render_template('account/register.html', form=reg_form)
 
 
 @account.route('/login', methods=('GET', 'POST'))
@@ -44,7 +44,7 @@ def login():
         if user.check_password(login_form.password.data):
             login_user(user)
             return redirect(url_for('account.profile'))
-    return render_template('views/account/login.html', form=login_form)
+    return render_template('account/login.html', form=login_form)
 
 
 @account.route('/logout', methods=('GET', 'POST'))
@@ -57,10 +57,7 @@ def logout():
 @account.route('/')
 @login_required
 def profile():
-    s =  'Profile for %s' % current_user.name
-    if not current_user.validated_email:
-        s += ' Please verify your email address.'
-    return s
+    return render_template('account/account.html')
 
 
 @account.route('/sendvalidation')
@@ -76,7 +73,7 @@ def send_email_validation(new_user):
     sender = MAIL.ROBOT
     targets = [new_user.email]
     subject = 'Verify your Email Address'
-    body = render_template('views/account/validation/email.html', validation_url=get_validation_link(new_user.id), user=new_user)
+    body = render_template('emails/account_validation.html', validation_url=get_validation_link(new_user.id), user=new_user)
     priority = MAIL.PRIORITY.VALIDATION
     mailer.send_async(targets, subject, body, sender, priority)
 
@@ -96,4 +93,4 @@ def validate_email(payload):
     if user.validated_email == True:
         return abort(404)
     user.validate_email()
-    return render_template('views/account/validation/success.html', user=user)
+    return render_template('account/email_validated.html', user=user)

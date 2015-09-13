@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+    {% if not current_user.validated_email %}
+    <div class="alert alert-danger">
+        <p>You haven't verified your account yet. <a href="#">Resend Email</a></p>
+    </div>
+    {% endif %}
+    <h1>{{ current_user.name }}</h1>
+    <p><a href="#">Ships</a></p>
+</div>
+{% endblock %}

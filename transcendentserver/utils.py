@@ -26,8 +26,7 @@ def get_current_datetime(*args, **kwargs):
 def get_validation_link(user_id):
     s = get_serializer()
     payload = s.dumps(str(user_id))
-    return url_for('account.validate_email',
-            payload=payload, _external=True)
+    return url_for('account.validate_email', payload=payload, _external=True)
 
 def get_serializer(secret_key=None):
     '''Returns a signing serializer using a secret key, defaults to the app's'''

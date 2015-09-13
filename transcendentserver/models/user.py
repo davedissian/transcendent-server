@@ -21,8 +21,7 @@ class User(db.Model, UserMixin):
     created_at      = db.Column(db.DateTime, default=get_current_datetime)
 
     current_session = db.relationship('Session', 
-                                      backref=db.backref('user',
-                                                         lazy='joined'), 
+                                      backref=db.backref('user', lazy='joined'), 
                                       lazy='joined')
 
     def get_password(self):
@@ -36,7 +35,7 @@ class User(db.Model, UserMixin):
     def check_password(self, plain_password):
         '''Validates the user's password
         Parameters:
-            pain_password: The password to check in plain text
+            plain_password: The password to check in plain text
         Returns:
             Bool: True if the parameter matches the stored hash
         '''

@@ -26,7 +26,7 @@ class USER:
     BCRYPT_WORK_FACTOR  = 12
     MAX_EMAIL_LENGTH    = 120
     BCRYPT_HASH_LENGTH  = 60
-    MIN_PASSWORD_LENGTH = 10
+    MIN_PASSWORD_LENGTH = 8
     VALIDATION_URL_LIFETIME = int(DAY.total_seconds())
     class ROLES:
         ADMIN    = 0
