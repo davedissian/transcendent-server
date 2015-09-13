@@ -37,8 +37,8 @@ class DefaultConfig:
     DEBUG = True
     SECRET_KEY = '\xe3\xfd\xdb\xb6A\xda"\xeb@NA\xf7\xa2\x0ccs\x13\x8b\x85\xec\xcb\x11\xe7$M\x11\x7f\x986a\xab]'
     SQLALCHEMY_RECORD_QUERIES = True
-    MAIL_USERNAME = 'nicprettejohn@gmail.com'
-    MAIL_PASSWORD = 'pkjdvniwmsstmpsp'
+    MAIL_USERNAME = 'avedissian.david@gmail.com'
+    MAIL_PASSWORD = 'vzwnntfpufnjrqku'
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_TLS = False
