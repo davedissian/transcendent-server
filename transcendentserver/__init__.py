@@ -1,6 +1,6 @@
 from flask import Flask
 from transcendentserver.extensions import db, login_manager, mail, assets, cache
-from transcendentserver.views import account, base, client
+from transcendentserver.views import account, api, base
 from wtforms.fields import HiddenField
 from transcendentserver.controls import mailer
 from transcendentserver.models import User
@@ -29,7 +29,7 @@ def configure_filters(app):
 
 def configure_blueprints(app):
     app.register_blueprint(base, url_prefix='/')
-    app.register_blueprint(client, url_prefix='/client')
+    app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(account, url_prefix='/account')
 
 class DefaultConfig:
