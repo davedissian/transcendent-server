@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
 {% block content %}
-<p>Thanks for validating your email address. Redirecting to your profile...</p>
+<p>Thanks for validating your email address.</p>
+<p>Redirecting to your profile. If it doesn't redirect automatically, click <a href="{{ url_for('.profile') }}">here</a>.</p>
 {% endblock %}

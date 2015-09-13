@@ -3,7 +3,7 @@
 <div class="container">
     {% if not current_user.validated_email %}
     <div class="alert alert-danger">
-        <p>You haven't verified your account yet. <a href="#">Resend Email</a></p>
+        <p>You haven't verified your account yet. <a href="{{ url_for('.send_validation') }}">Resend Email</a></p>
     </div>
     {% endif %}
     <h1>{{ current_user.name }}</h1>

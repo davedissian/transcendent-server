@@ -30,7 +30,7 @@ def setup_workers():
 def create_message(targets, subject, body, sender):
     subject = subject.encode('utf-8')
     body = body.encode('utf-8')
-    return Message(subject, targets, body, sender=sender)
+    return Message(subject, targets, html=body, sender=sender)
 
 def send(targets, subject, body, sender):
     message = create_message(targets, subject, body, sender) 

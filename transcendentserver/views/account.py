@@ -16,7 +16,7 @@ account = Blueprint('account', 'transcendentserver')
 @account.route('/register', methods=('GET', 'POST'))
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('account.profile'))
+        return redirect(url_for('.profile'))
     reg_form = RegistrationForm(next=request.args.get('next'))
     
     if reg_form.validate_on_submit():
@@ -43,7 +43,7 @@ def login():
             abort(404)
         if user.check_password(login_form.password.data):
             login_user(user)
-            return redirect(url_for('account.profile'))
+            return redirect(url_for('.profile'))
     return render_template('account/login.html', form=login_form)
 
 
@@ -51,7 +51,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('.login'))
+    return redirect(url_for('base.index'))
 
 
 @account.route('/')
@@ -63,7 +63,7 @@ def profile():
 @account.route('/sendvalidation')
 @login_required
 def send_validation():
-    if current_user.is_validated():
+    if current_user.validated_email:
         return redirect(url_for('.profile'))
     send_email_validation(current_user)
     return 'Success'

@@ -47,12 +47,15 @@ class UserSession(Resource):
         password = args['password']
         current_user = User.find(username)
 
-        if current_user and current_user.check_password(password):
-            Session.delete_user_sessions(current_user.id)
-            new_session = Session.create_session(current_user)
-            return {'success' : True, 'auth' : new_session.id}, HTTP.OK
+        if not current_user:
+            return {'success' : False, 'message' : 'Username does not exist'}, HTTP.UNAUTHORIZED
 
-        return {'success' : False, 'auth' : None}, HTTP.UNAUTHORIZED
+        if not current_user.check_password(password):
+            return {'success' : False, 'message' : 'The password provided is incorrect'}, HTTP.UNAUTHORIZED
+
+        Session.delete_user_sessions(current_user.id)
+        new_session = Session.create_session(current_user)
+        return {'success' : True, 'auth' : new_session.id}
 
     def delete(self, username):
         # TODO - is username == auth?
@@ -108,8 +111,8 @@ class Servers(Resource):
             { 'id' : lobby.id.hex(),
               'host_guid' : lobby.host_guid
             } for lobby in possible_lobbies]
-        return { 'server-count' : server_count,
-                 'server-list' : server_list,
+        return { 'count' : server_count,
+                 'list' : server_list,
                  'success' : True
                }
 
@@ -120,7 +123,7 @@ class Servers(Resource):
         parser.add_argument('max_players', default=LOBBY.MAX_PLAYERS_DEFAULT)
         args = parser.parse_args()
 
-        session = get_session_or_abort(args['guid'])
+        session = get_session_or_abort(args['auth'])
         host_guid = args['guid']
         max_players = args['max_players']
 
